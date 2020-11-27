@@ -60,7 +60,7 @@ class Body:
 
 try:
     output = int(input("""How often do you want the changes to be made?
-The larger the gap the faster the days go by, but the odder the orbit shape!"""))
+The larger the gap is, the faster the days go by, but the odder the orbit shape!"""))
 except:
     pass
 sun = Body("sun", 1.9885e30, 0, 0, 0, 0, "yellow", 30)
