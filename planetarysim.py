@@ -16,6 +16,7 @@ class Body:
     def __init__(self, name, mass, xpos, ypos, xvel, yvel, color, size):
         objects.append(self)
         centres.append(name)
+        self.name = name
         self.mass = mass
         self.xpos = xpos
         self.ypos = ypos
@@ -68,6 +69,7 @@ def changescale(val=0):
     global scale
     scale = (scaleslider.get()*AU)/100
 
+
 def run():
     global days
     start.destroy()
@@ -85,12 +87,19 @@ def run():
         for object in objects:
             object.move()
 
+
 def changecente(*args):
     global centre
     centre = eval(centrevar.get())
+    centrelabel.config(text=f"Centred on: {centre.name.title()}")
+
+def clearscreen():
+    for object in objects:
+        object.draw.clear()
+
 
 def menu_setup():
-    global start, outputslider, scaleslider, daylabel, centrebox, centrevar
+    global start, outputslider, scaleslider, daylabel, centrebox, centrevar, centrelabel
     screen = Tk()
     start = Button(screen, text="Start Sim", command=run)
     start.pack()
@@ -101,22 +110,32 @@ def menu_setup():
     outputslider.pack()
     outputlabel.pack()
     scalelabel = Label(screen, text="Scale - AU/100pxl")
-    scaleslider = Scale(screen, from_=0.1, to=5, resolution=0.1, orient=HORIZONTAL, command=changescale)
+    scaleslider = Scale(screen, from_=0.0005, to=5, resolution=0.0005, orient=HORIZONTAL, command=changescale)
     scaleslider.set(1)
     scaleslider.pack()
     scalelabel.pack()
-    centrevar = StringVar()
+    scaleslider.focus_set()
+    centrevar = StringVar(screen)
     centrevar.set(centres[0])
     centrebox = OptionMenu(screen, centrevar, *centres, command=changecente)
+    centrebox.config(width=5)
+    centrelabel = Label(screen, text=f"Centre Point")
     centrebox.pack()
+    centrelabel.pack()
+    clearbutton= Button(screen, text="CLEAR LINES", command=clearscreen)
+    clearbutton.pack()
 
 
-sun = Body("sun", 1.9885e30, 0, 0, 0, 0, "yellow", 30)
-centre = sun
-mercury = Body("mercury", 3.3011e23, 57909050000, 0, 0, 47362, "gray", 8)
-venus = Body("venus", 4.8675e24, 108208000000, 0, 0, 35020, "orange", 14)
-earth = Body("earth", 5.97237e24, 149598023000, 0, 0, 29780, "blue", 15)
-moon = Body("moon", 7.342e22, 149598023000 + 384399000, 0, 0, 29780 + 1022, "gray", 5)
-mars = Body("mars", 6.4171e23, 227939200000, 0, 0, 24007, "red", 10)
+Origin = Body("Origin", 0, 0, 0, 0, 0, "black", 0)
+objects.remove(Origin)
+centre = Origin
+Origin.draw.hideturtle()
+Sun = Body("Sun", 1.9885e30, 0, 0, 0, 0, "yellow", 30)
+Mercury = Body("Mercury", 3.3011e23, 57909050000, 0, 0, 47362, "gray", 8)
+Venus = Body("Venus", 4.8675e24, 108208000000, 0, 0, 35020, "orange", 14)
+Earth = Body("Earth", 5.97237e24, 149598023000, 0, 0, 29780, "blue", 15)
+Moon = Body("Moon", 7.342e22, 149598023000 + 384399000, 0, 0, 29780 + 1022, "gray", 5)
+Mars = Body("Mars", 6.4171e23, 227939200000, 0, 0, 24007, "red", 10)
+Jupiter = Body("Jupiter", 1.8982e27, 778570000000, 0, 0, 13070, "orange red", 25)
 menu_setup()
 mainloop()
