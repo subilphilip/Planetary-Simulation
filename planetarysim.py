@@ -64,10 +64,12 @@ class Body:
 def changeoutput(val=0):
     global output
     output = outputslider.get()
+    outputslider.focus_set()
 
 def changescale(val=0):
     global scale
     scale = (scaleslider.get()*AU)/100
+    scaleslider.focus_set()
 
 
 def run():
@@ -97,9 +99,17 @@ def clearscreen():
     for object in objects:
         object.draw.clear()
 
+def trailschange():
+    if trailson.get():
+        for object in objects:
+            object.draw.pendown()
+    else:
+        for object in objects:
+            object.draw.penup()
+
 
 def menu_setup():
-    global start, outputslider, scaleslider, daylabel, centrebox, centrevar, centrelabel
+    global start, outputslider, scaleslider, daylabel, centrebox, centrevar, centrelabel, trailson
     screen = Tk()
     start = Button(screen, text="Start Sim", command=run)
     start.pack()
@@ -114,7 +124,6 @@ def menu_setup():
     scaleslider.set(1)
     scaleslider.pack()
     scalelabel.pack()
-    scaleslider.focus_set()
     centrevar = StringVar(screen)
     centrevar.set(centres[0])
     centrebox = OptionMenu(screen, centrevar, *centres, command=changecente)
@@ -122,6 +131,11 @@ def menu_setup():
     centrelabel = Label(screen, text=f"Centre Point")
     centrebox.pack()
     centrelabel.pack()
+    trailson = BooleanVar(screen)
+    trails = Checkbutton(screen, text="Trails", variable=trailson, onvalue=True, offvalue=False, command=trailschange)
+    trails.select()
+    trails.focus_set()
+    trails.pack()
     clearbutton= Button(screen, text="CLEAR LINES", command=clearscreen)
     clearbutton.pack()
 
@@ -134,7 +148,7 @@ Sun = Body("Sun", 1.9885e30, 0, 0, 0, 0, "yellow", 30)
 Mercury = Body("Mercury", 3.3011e23, 57909050000, 0, 0, 47362, "gray", 8)
 Venus = Body("Venus", 4.8675e24, 108208000000, 0, 0, 35020, "orange", 14)
 Earth = Body("Earth", 5.97237e24, 149598023000, 0, 0, 29780, "blue", 15)
-Moon = Body("Moon", 7.342e22, 149598023000 + 384399000, 0, 0, 29780 + 1022, "gray", 5)
+Moon = Body("Moon", 7.342e22, Earth.xpos + 384399000, 0, 0, Earth.yvel + 1022, "gray", 5)
 Mars = Body("Mars", 6.4171e23, 227939200000, 0, 0, 24007, "red", 10)
 Jupiter = Body("Jupiter", 1.8982e27, 778570000000, 0, 0, 13070, "orange red", 25)
 menu_setup()
